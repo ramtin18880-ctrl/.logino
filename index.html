@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090711">
-<meta name="description" content="LOGINO؛ استودیوی ساخت لوگو با هوش مصنوعی. ایده‌ات را توصیف کن و لوگوی اختصاصی بگیر.">
+<meta name="description" content="LOGINO؛ استودیوی ساخت لوگو با مدل تصویرساز FLUX.">
 <title>LOGINO — استودیوی هوشمند لوگو</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,10 +23,10 @@
   <section class="hero">
     <div class="eyebrow"><span class="dot"></span> ایده‌ات را به هویت بصری تبدیل کن</div>
     <h1>لوگوی خاصت، فقط با <span class="gradient">یک توضیح</span></h1>
-    <p>چیزی که در ذهن داری بنویس. هوش مصنوعی LOGINO از توضیحت یک طرح لوگوی اختصاصی می‌سازد؛ ساده، سریع و بدون نیاز به دانش طراحی.</p>
+    <p>چیزی که در ذهن داری بنویس. مدل FLUX از توضیحت یک طرح لوگوی اختصاصی می‌سازد؛ ساده، سریع و بدون نیاز به دانش طراحی.</p>
   </section>
   <section class="studio" aria-label="ساخت لوگو">
-    <div class="studio-head"><strong>چه لوگویی در ذهنته؟</strong><span class="secure">✦ ساخت با هوش مصنوعی</span></div>
+    <div class="studio-head"><strong>چه لوگویی در ذهنته؟</strong><span class="secure">✦ مدل FLUX</span></div>
     <textarea id="idea" class="prompt" maxlength="700" placeholder="مثلاً: یک لوگوی مینیمال و حرفه‌ای برای یک برند تکنولوژی به نام NOVA؛ نماد انتزاعی الهام‌گرفته از ستاره، حس مدرن و قابل اعتماد..."></textarea>
     <div class="under"><span>هرچه توضیحت دقیق‌تر باشد، نتیجه بهتر می‌شود.</span><span id="count">۰ / ۷۰۰</span></div>
     <button id="generate" class="generate">✦ ساخت لوگوی من</button>
@@ -40,7 +40,7 @@
   </section>
   <section class="steps">
     <article class="step"><div class="step-icon">✎</div><div><b>۱. ایده‌ات را بنویس</b><p>نام برند، موضوع و حسی که می‌خواهی منتقل شود را توضیح بده.</p></div></article>
-    <article class="step"><div class="step-icon">✧</div><div><b>۲. لوگو ساخته می‌شود</b><p>هوش مصنوعی بر اساس توضیحت یک طرح اختصاصی تولید می‌کند.</p></div></article>
+    <article class="step"><div class="step-icon">✧</div><div><b>۲. لوگو ساخته می‌شود</b><p>مدل FLUX بر اساس توضیحت یک طرح اختصاصی تولید می‌کند.</p></div></article>
     <article class="step"><div class="step-icon">↓</div><div><b>۳. دریافتش کن</b><p>پیش‌نمایش را ببین و فایل PNG لوگویت را ذخیره کن.</p></div></article>
   </section>
 </main>
@@ -66,7 +66,7 @@ $("generate").addEventListener("click",async()=>{
   if(!data.image)throw new Error("تصویر از سرویس دریافت نشد.");
   const img=$("imagebox");img.innerHTML="";const el=document.createElement("img");el.alt="لوگوی تولیدشده توسط LOGINO";el.src=data.image;img.appendChild(el);img.style.display="grid";
   $("download").href=data.image;$("download").classList.add("show");q.used++;saveQuota(q);$("resultStatus").textContent="لوگو آماده است";toast("لوگوی تو ساخته شد!"); 
- }catch(err){$("imagebox").innerHTML='<div class="placeholder">ساخت لوگو انجام نشد.<br>تنظیمات سرویس هوش مصنوعی هنوز کامل نشده یا خطایی رخ داده است.</div>';$("imagebox").style.display="grid";$("resultStatus").textContent="نیاز به بررسی";toast(err.message||"خطای ارتباط با سرور")}
+ }catch(err){$("imagebox").innerHTML='<div class="placeholder">ساخت لوگو انجام نشد.<br>تنظیمات سرویس اتصال مدل FLUX هنوز کامل نشده یا خطایی رخ داده است.</div>';$("imagebox").style.display="grid";$("resultStatus").textContent="نیاز به بررسی";toast(err.message||"خطای ارتباط با سرور")}
  finally{$("loader").classList.remove("show");$("generate").textContent="✦ ساخت لوگوی من";refreshQuota()}
 });
 refreshQuota();
