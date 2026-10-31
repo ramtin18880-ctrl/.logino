@@ -1,5 +1,7 @@
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
-const IMAGE_MODEL = "black-forest-labs/flux.1-schnell";
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+const IMAGE_MODEL = "@cf/black-forest-labs/flux-1-schnell";
 
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
@@ -11,10 +13,9 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const apiKey = process.env.POLLINATIONS_API_KEY;
-  if (!apiKey) {
+  if (!ACCOUNT_ID || !API_TOKEN) {
     return res.status(503).json({
-      error: "کلید Pollinations هنوز در تنظیمات سرور ثبت نشده است. متغیر POLLINATIONS_API_KEY را تنظیم کنید."
+      error: "اتصال Cloudflare هنوز تنظیم نشده است. متغیرهای CLOUDFLARE_ACCOUNT_ID و CLOUDFLARE_API_TOKEN را در تنظیمات Vercel ثبت کنید."
     });
   }
 
@@ -32,47 +33,56 @@ module.exports = async function handler(req, res) {
   ].join("\n\n");
 
   try {
-    const url = new URL("https://gen.pollinations.ai/image/" + encodeURIComponent(prompt));
-    url.searchParams.set("model", IMAGE_MODEL);
-    url.searchParams.set("width", "1024");
-    url.searchParams.set("height", "1024");
-    url.searchParams.set("nologo", "true");
+    const endpoint = "https://api.cloudflare.com/client/v4/accounts/"
+      + encodeURIComponent(ACCOUNT_ID)
+      + "/ai/run/" + IMAGE_MODEL;
 
-    const upstream = await fetch(url, {
-      method: "GET",
+    const upstream = await fetch(endpoint, {
+      method: "POST",
       headers: {
-        "Authorization": "Bearer " + apiKey,
-        "Accept": "image/*"
-      }
+        "Authorization": "Bearer " + API_TOKEN,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt, steps: 4 })
     });
 
-    if (!upstream.ok) {
-      const details = await upstream.text().catch(() => "");
-      let message = "سرویس FLUX نتوانست تصویر را تولید کند.";
-      if (upstream.status === 401) message = "کلید Pollinations معتبر نیست.";
-      else if (upstream.status === 402) message = "اعتبار حساب Pollinations کافی نیست.";
-      else if (upstream.status === 429) message = "درخواست‌ها زیاد شده‌اند؛ کمی بعد دوباره تلاش کنید.";
-      else if (details) message += " " + details.slice(0, 240);
-      return res.status(upstream.status === 401 || upstream.status === 402 || upstream.status === 429 ? upstream.status : 502)
-        .json({ error: message });
+    const payload = await upstream.json().catch(() => null);
+
+    if (!upstream.ok || payload?.success === false) {
+      const apiMessage = Array.isArray(payload?.errors)
+        ? payload.errors.map(item => item.message).filter(Boolean).join(" ")
+        : "";
+      let message = "سرویس Cloudflare نتوانست تصویر را تولید کند.";
+      if (upstream.status === 401) {
+        message = "توکن Cloudflare معتبر نیست یا منقضی شده است.";
+      } else if (upstream.status === 403) {
+        message = "توکن Cloudflare مجوز Workers AI ندارد یا دسترسی این مدل محدود است.";
+      } else if (upstream.status === 429) {
+        message = "محدودیت درخواست Cloudflare پر شده است؛ بعداً دوباره تلاش کنید.";
+      } else if (upstream.status === 400 && apiMessage) {
+        message = "درخواست تولید تصویر پذیرفته نشد: " + apiMessage.slice(0, 220);
+      } else if (apiMessage) {
+        message += " " + apiMessage.slice(0, 220);
+      }
+      const status = [400, 401, 403, 429].includes(upstream.status)
+        ? upstream.status
+        : 502;
+      return res.status(status).json({ error: message });
     }
 
-    const contentType = upstream.headers.get("content-type") || "image/jpeg";
-    if (!contentType.startsWith("image/")) {
-      return res.status(502).json({ error: "پاسخ سرویس، فایل تصویر معتبر نبود." });
-    }
-
-    const bytes = Buffer.from(await upstream.arrayBuffer());
-    if (!bytes.length) {
-      return res.status(502).json({ error: "تصویر خالی از سرویس دریافت شد." });
+    const image = payload?.result?.image;
+    if (typeof image !== "string" || !image.length) {
+      return res.status(502).json({
+        error: "Cloudflare پاسخ داد، اما داده تصویر معتبر دریافت نشد."
+      });
     }
 
     return res.status(200).json({
-      image: "data:" + contentType + ";base64," + bytes.toString("base64")
+      image: "data:image/jpeg;base64," + image
     });
   } catch (error) {
     return res.status(502).json({
-      error: "ارتباط با سرویس تولید تصویر برقرار نشد. لطفاً دوباره تلاش کنید."
+      error: "ارتباط با Cloudflare برقرار نشد. لطفاً کمی بعد دوباره تلاش کنید."
     });
   }
 };
