@@ -36,7 +36,7 @@
     <div class="result-title"><strong>خروجی طراحی تو</strong><span class="status" id="resultStatus">آماده شد</span></div>
     <div class="loader" id="loader"><div class="spinner"></div>در حال خلق لوگوی اختصاصی تو...</div>
     <div class="imagebox" id="imagebox"><div class="placeholder">لوگوی ساخته‌شده اینجا نمایش داده می‌شود.</div></div>
-    <a class="download" id="download" download="logino-logo.png">دانلود لوگو با کیفیت PNG ↓</a>
+    <a class="download" id="download" download="logino-logo.png">دانلود فایل لوگو ↓</a>
   </section>
   <section class="steps">
     <article class="step"><div class="step-icon">✎</div><div><b>۱. ایده‌ات را بنویس</b><p>نام برند، موضوع و حسی که می‌خواهی منتقل شود را توضیح بده.</p></div></article>
@@ -58,7 +58,7 @@ function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setT
 $("idea").addEventListener("input",()=>{$("count").textContent=persian($("idea").value.length)+" / ۷۰۰"});
 $("generate").addEventListener("click",async()=>{
  const idea=$("idea").value.trim();if(idea.length<12){toast("لطفاً توضیح کامل‌تری بنویس (حداقل ۱۲ حرف).");return}
- const q=readQuota();if(q.used>=2){refreshQuota();toast("سهمیه رایگان فعلاً تمام شده است.");return}
+ const q=readQuota();if(q.used>=2){refreshQuota();toast("محدودیت فعلی استفاده از این دستگاه تمام شده است.");return}
  $("result").classList.add("show");$("loader").classList.add("show");$("imagebox").style.display="none";$("download").classList.remove("show");$("resultStatus").textContent="در حال ساخت";$("generate").disabled=true;$("generate").textContent="در حال ساخت لوگو...";
  try{
   const response=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idea})});
