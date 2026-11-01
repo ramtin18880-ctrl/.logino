@@ -95,12 +95,12 @@ $("generate").addEventListener("click",async()=>{
  const q=readQuota();if(q.cooldownUntil&&Date.now()<q.cooldownUntil){refreshQuota();toast("سهمیه رایگان پس از پایان شمارش معکوس شارژ می‌شود.");return}
  $("result").classList.add("show");$("loader").classList.add("show");$("imagebox").style.display="none";$("download").classList.remove("show");$("resultStatus").textContent="در حال ساخت";$("generate").disabled=true;$("generate").textContent="در حال ساخت لوگو...";
  try{
-  const response=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({idea})});
+  const {data:sessionData}=await supabaseClient.auth.getSession();const accessToken=sessionData?.session?.access_token;if(!accessToken){location.href="/auth.html";return}const response=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},body:JSON.stringify({idea})});
   const data=await response.json();if(!response.ok)throw new Error(data.error||"ساخت لوگو انجام نشد.");
   if(!data.image)throw new Error("تصویر از سرویس دریافت نشد.");
   const branded = await makeBrandedLogo(data.image);
   const img=$("imagebox");img.innerHTML="";const el=document.createElement("img");el.alt="لوگوی اختصاصی LOGINO";el.src=branded;img.appendChild(el);img.style.display="grid";
-  $("download").href=branded;$("download").download="logino-logo.png";$("download").classList.add("show");q.used=(q.used||0)+1;if(q.used>=2)q.cooldownUntil=Date.now()+PERIOD;saveQuota(q);$("resultStatus").textContent="لوگو آماده است";toast("لوگوی تو ساخته شد!"); 
+  $("download").href=branded;$("download").download="logino-logo.png";$("download").classList.add("show");if(typeof data.remaining==="number"){$("quotaText").textContent=persian(data.remaining)+" از ۲ تصویر";} $("resultStatus").textContent="لوگو آماده است";toast("لوگوی تو ساخته شد!"); 
  }catch(err){$("imagebox").innerHTML='<div class="placeholder">ساخت لوگو انجام نشد.<br>تنظیمات سرویس اتصال مدل FLUX هنوز کامل نشده یا خطایی رخ داده است.</div>';$("imagebox").style.display="grid";$("resultStatus").textContent="نیاز به بررسی";toast(err.message||"خطای ارتباط با سرور")}
  finally{$("loader").classList.remove("show");$("generate").textContent="✦ ساخت لوگوی من";refreshQuota()}
 });
