@@ -136,6 +136,9 @@ $("savePassword").addEventListener("click",async()=>{const password=$("newPasswo
 $("logout").addEventListener("click",async()=>{if(!confirm("از حساب LOGINO خارج می‌شوی؟"))return;const {error}=await supabaseClient.auth.signOut();if(error){$("profileNotice").textContent=error.message;return}location.reload()});
 if(supabaseClient){supabaseClient.auth.getSession().then(({data})=>{currentUser=data.session?.user||null;if(currentUser){$("accountLink").textContent="پروفایل من";$("accountLink").href="#profile"}else{$("accountLink").textContent="ورود / ثبت‌نام";$("accountLink").href="/auth.html"}});supabaseClient.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;$("accountLink").textContent=currentUser?"پروفایل من":"ورود / ثبت‌نام";$("accountLink").href=currentUser?"#profile":"/auth.html"})}
 
+const paymentState=new URLSearchParams(location.search).get("payment");
+const paymentMessages={success:"پرداخت با موفقیت تأیید شد و اشتراک حسابت فعال شد.",cancelled:"پرداخت لغو شد؛ اشتراکی فعال نشد.",failed:"پرداخت تأیید نشد؛ اشتراکی فعال نشد.",expired:"مهلت این سفارش پرداخت تمام شده است.",setup_error:"تنظیمات درگاه روی سرور کامل نیست.",not_found:"سفارش پرداخت پیدا نشد.",activation_error:"پرداخت تأیید شد اما فعال‌سازی اشتراک نیاز به بررسی دارد.",verify_error:"ارتباط با سامانه تأیید پرداخت قطع شد."};
+if(paymentState&&paymentMessages[paymentState]){toast(paymentMessages[paymentState]);history.replaceState({},document.title,location.pathname)}
 refreshQuota();setInterval(refreshQuota,1000);document.querySelectorAll("[data-plan]").forEach(button=>button.addEventListener("click",async()=>{
  const plan=button.dataset.plan;
  if(!["monthly","yearly"].includes(plan))return;
