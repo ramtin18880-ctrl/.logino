@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
   const prompt = [
     "Create one original, professional brand logo based on this brief:",
     idea,
-    "Logo design only. Clean distinctive vector-like silhouette, balanced composition, crisp edges, centered on a plain uncluttered background. Use readable typography only if the brief specifies brand text. No mockup, no watermark, no presentation board, no extra captions."
+    "Create ONLY the graphic symbol / icon for the brand. Absolutely NO text, NO letters, NO words, NO numbers, NO typography, NO pseudo-writing, NO watermark. The website will add the exact brand name separately. Make a premium, distinctive, memorable logo mark with professional vector-logo art direction, strong simple geometry, precise clean edges, balanced negative space, polished details, centered composition, and a restrained sophisticated palette derived from the brief. Show one logo symbol only, not a mockup, not a poster, not a presentation board. Avoid generic clip-art, stock-logo appearance, random decorative shapes, and busy backgrounds."
   ].join("\n\n");
 
   try {
