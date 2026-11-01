@@ -32,8 +32,6 @@
       <a href="#" class="forgot" id="forgot">رمز عبورم را فراموش کردم</a>
       <button class="primary" id="submit" type="submit">ورود به حساب</button>
     </form>
-    <div class="divider">یا</div>
-    <button class="google" id="google" type="button">ادامه با Google</button>
     <div class="terms">با ساخت حساب، با شرایط استفاده و سیاست حریم خصوصی LOGINO موافقت می‌کنی.</div>
   </section>
   <p class="foot"><a href="/">بازگشت به صفحهٔ اصلی</a> · © 2026 LOGINO</p>
@@ -58,8 +56,7 @@ function ready(){if(!client){message("اتصال Supabase هنوز تنظیم ن
 $("authForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage();if(!ready())return;const email=$("email").value.trim(),password=$("password").value,button=$("submit");if(mode==="signup"&&password.length<8){message("رمز عبور باید حداقل ۸ کاراکتر باشد.","error");return}button.disabled=true;button.textContent="لطفاً صبر کن...";
 try{if(mode==="signup"){const {data,error}=await client.auth.signUp({email,password,options:{data:{display_name:$("name").value.trim()}}});if(error)throw error;if(data.session){message("حساب ساخته شد؛ خوش آمدی! حالا می‌توانی وارد LOGINO شوی.")}else{message("حساب ساخته شد. ایمیلت را برای تأیید باز کن؛ سپس وارد شو.")}}else{const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;message("ورود موفق بود؛ در حال انتقال...");setTimeout(()=>location.href="/",700)}}catch(err){message(err.message||"خطایی رخ داد. دوباره تلاش کن.","error")}finally{button.disabled=false;button.textContent=mode==="signup"?"ساخت حساب":"ورود به حساب"}});
 $("forgot").addEventListener("click",async e=>{e.preventDefault();clearMessage();if(!ready())return;const email=$("email").value.trim();if(!email){message("اول ایمیلت را وارد کن.","error");$("email").focus();return}try{const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/auth.html"});if(error)throw error;message("اگر این ایمیل حسابی داشته باشد، لینک بازیابی برایش ارسال می‌شود.")}catch(err){message(err.message||"ارسال لینک بازیابی انجام نشد.","error")}});
-$("google").addEventListener("click",async()=>{clearMessage();if(!ready())return;try{const {error}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+"/"}});if(error)throw error}catch(err){message(err.message||"ورود با Google فعلاً در دسترس نیست.","error")}});
-if(client){client.auth.getSession().then(({data})=>{if(data.session){$("heading").textContent="از قبل وارد شده‌ای";$("subtitle").textContent="حساب تو فعال است.";$("submit").textContent="رفتن به LOGINO";$("authForm").addEventListener("submit",e=>{e.preventDefault();location.href="/"},{once:true})}})}
+if(client){client.auth.getSession().then(({data})=>{if(data.session)location.replace("/")});client.auth.onAuthStateChange((event,session)=>{if(session&&event==="SIGNED_IN")location.replace("/")})}
 </script>
 </body>
 </html>
