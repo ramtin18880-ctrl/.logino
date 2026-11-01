@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090711">
+<title>ورود و ثبت‌نام | LOGINO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#090711;--panel:#12101d;--line:#302843;--muted:#a59bb8;--text:#f8f5ff;--purple:#9b70ff;--pink:#d18cff;--green:#75dfb0;--red:#ff8f9b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -12%,#39245d 0,transparent 48%),var(--bg);color:var(--text);font-family:Vazirmatn,system-ui,sans-serif;display:grid;place-items:center;padding:22px}button,input{font:inherit}.shell{width:min(100%,480px)}.brand{display:flex;justify-content:center;align-items:center;gap:11px;font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;margin:0 0 25px}.logo{width:39px;height:39px;border-radius:13px;background:linear-gradient(145deg,#c39aff,#7543e8);display:grid;place-items:center;box-shadow:0 5px 28px #925cff55}.logo svg{width:23px}.card{background:linear-gradient(145deg,#191529f5,#100e19f7);border:1px solid #44365f;border-radius:25px;padding:27px;box-shadow:0 25px 90px #0009,0 0 50px #8751d51a}.eyebrow{text-align:center;color:#d4c0ff;font-size:11px;letter-spacing:.2px}.heading{text-align:center;font-size:27px;font-weight:900;margin:8px 0 5px}.sub{text-align:center;color:var(--muted);font-size:12px;line-height:1.9;margin:0 0 22px}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#0c0a14;padding:5px;border:1px solid #2b2439;border-radius:13px;margin-bottom:20px}.tab{border:0;border-radius:9px;background:transparent;color:var(--muted);padding:10px;font-weight:700;font-size:13px}.tab.active{background:linear-gradient(100deg,#7544df,#a36aff);color:white;box-shadow:0 5px 18px #8953e644}.field{margin:13px 0}.field label{display:block;font-size:12px;color:#d9d1e7;margin-bottom:7px}.input-wrap{position:relative}.field input{width:100%;height:49px;border:1px solid #3a314c;border-radius:12px;background:#0c0a14;color:white;padding:0 13px;outline:none;font-size:13px;direction:ltr;text-align:left}.field input:focus{border-color:#a77aff;box-shadow:0 0 0 3px #9b70ff20}.field input::placeholder{color:#706981}.toggle{position:absolute;left:9px;top:7px;height:35px;border:0;background:#211a30;color:#c9b7e8;border-radius:8px;padding:0 10px;font-size:11px}.hint{color:#857c96;font-size:10px;margin-top:6px}.strength{height:4px;background:#292337;border-radius:10px;overflow:hidden;margin-top:8px}.strength span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff8f9b,#eac17b,#75dfb0);transition:.2s}.forgot{display:block;text-align:left;color:#c5a7ff;text-decoration:none;font-size:11px;margin:4px 0 16px}.primary{width:100%;height:49px;border:0;border-radius:13px;background:linear-gradient(100deg,#7544df,#a36aff 55%,#bd76ed);color:white;font-weight:800;box-shadow:0 8px 25px #8953e644}.primary:disabled{opacity:.55;cursor:wait}.divider{display:flex;align-items:center;gap:12px;color:#777087;font-size:10px;margin:18px 0}.divider:before,.divider:after{content:"";height:1px;background:#30283d;flex:1}.google{width:100%;height:45px;border:1px solid #403550;background:#171322;color:#eee8f7;border-radius:12px;font-size:12px;font-weight:700}.message{display:none;border-radius:11px;padding:11px 12px;font-size:11px;line-height:1.9;margin:0 0 14px}.message.show{display:block}.message.error{background:#3a1d2a;border:1px solid #743447;color:#ffc1c8}.message.success{background:#173326;border:1px solid #326b50;color:#b6f4d2}.foot{text-align:center;color:#817991;font-size:10px;line-height:2;margin:18px 0}.foot a{color:#c4a5ff;text-decoration:none}.hidden{display:none!important}.terms{text-align:center;color:#7f778d;font-size:10px;line-height:1.9;margin-top:15px}@media(max-width:420px){.card{padding:21px 17px}.heading{font-size:24px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <div class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 14.7 9l6.5 3-6.5 2.8-2.7 6.4-2.8-6.4-6.4-2.8 6.4-3L12 2.8Z"/></svg></span><span>LOGINO</span></div>
+  <section class="card">
+    <div class="eyebrow">حساب کاربری هوشمند</div>
+    <h1 class="heading" id="heading">خوش برگشتی!</h1>
+    <p class="sub" id="subtitle">وارد حساب خودت شو و ساخت لوگو را ادامه بده.</p>
+    <div class="tabs" role="tablist" aria-label="نوع ورود">
+      <button class="tab active" id="loginTab" type="button" role="tab" aria-selected="true">ورود</button>
+      <button class="tab" id="signupTab" type="button" role="tab" aria-selected="false">ساخت حساب</button>
+    </div>
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+    <form id="authForm">
+      <div class="field hidden" id="nameField"><label for="name">نام نمایشی</label><input id="name" type="text" autocomplete="name" maxlength="60" placeholder="نامی که دوست داری"></div>
+      <div class="field"><label for="email">ایمیل</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></div>
+      <div class="field"><label for="password">رمز عبور</label><div class="input-wrap"><input id="password" type="password" autocomplete="current-password" required minlength="8" placeholder="حداقل ۸ کاراکتر"><button class="toggle" id="togglePassword" type="button">نمایش</button></div><div class="strength hidden" id="strength"><span id="strengthBar"></span></div><div class="hint" id="passwordHint">رمز عبور خودت را وارد کن.</div></div>
+      <a href="#" class="forgot" id="forgot">رمز عبورم را فراموش کردم</a>
+      <button class="primary" id="submit" type="submit">ورود به حساب</button>
+    </form>
+    <div class="divider">یا</div>
+    <button class="google" id="google" type="button">ادامه با Google</button>
+    <div class="terms">با ساخت حساب، با شرایط استفاده و سیاست حریم خصوصی LOGINO موافقت می‌کنی.</div>
+  </section>
+  <p class="foot"><a href="/">بازگشت به صفحهٔ اصلی</a> · © 2026 LOGINO</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* پس از دریافت Project URL و anon/public key این دو مقدار را تنظیم می‌کنیم.
+   هرگز service_role key را در این فایل قرار ندهید. */
+const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
+const client = configured && window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}) : null;
+const $ = id => document.getElementById(id);
+let mode = "login";
+function message(text,type="success"){const el=$("message");el.textContent=text;el.className="message show "+type}
+function clearMessage(){$("message").className="message"}
+function setMode(next){mode=next;clearMessage();const signup=mode==="signup";$("loginTab").classList.toggle("active",!signup);$("signupTab").classList.toggle("active",signup);$("loginTab").setAttribute("aria-selected",String(!signup));$("signupTab").setAttribute("aria-selected",String(signup));$("heading").textContent=signup?"حساب جدید بساز":"خوش برگشتی!";$("subtitle").textContent=signup?"برای شروع، حساب LOGINO خودت را بساز.":"وارد حساب خودت شو و ساخت لوگو را ادامه بده.";$("nameField").classList.toggle("hidden",!signup);$("password").autocomplete=signup?"new-password":"current-password";$("strength").classList.toggle("hidden",!signup);$("forgot").classList.toggle("hidden",signup);$("submit").textContent=signup?"ساخت حساب":"ورود به حساب";$("passwordHint").textContent=signup?"از ترکیب حروف و عدد برای رمز قوی‌تر استفاده کن.":"رمز عبور خودت را وارد کن."}
+$("loginTab").addEventListener("click",()=>setMode("login"));$("signupTab").addEventListener("click",()=>setMode("signup"));
+$("togglePassword").addEventListener("click",()=>{const p=$("password");p.type=p.type==="password"?"text":"password";$("togglePassword").textContent=p.type==="password"?"نمایش":"پنهان"});
+$("password").addEventListener("input",()=>{const p=$("password").value;let score=0;if(p.length>=8)score++;if(/[A-Z]/.test(p)&&/[a-z]/.test(p))score++;if(/\d/.test(p))score++;if(/[^A-Za-z0-9]/.test(p))score++;$("strengthBar").style.width=(score*25)+"%"});
+function ready(){if(!client){message("اتصال Supabase هنوز تنظیم نشده است. ابتدا Project URL و anon/public key را در تنظیمات این صفحه قرار می‌دهیم.","error");return false}return true}
+$("authForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage();if(!ready())return;const email=$("email").value.trim(),password=$("password").value,button=$("submit");if(mode==="signup"&&password.length<8){message("رمز عبور باید حداقل ۸ کاراکتر باشد.","error");return}button.disabled=true;button.textContent="لطفاً صبر کن...";
+try{if(mode==="signup"){const {data,error}=await client.auth.signUp({email,password,options:{data:{display_name:$("name").value.trim()}}});if(error)throw error;if(data.session){message("حساب ساخته شد؛ خوش آمدی! حالا می‌توانی وارد LOGINO شوی.")}else{message("حساب ساخته شد. ایمیلت را برای تأیید باز کن؛ سپس وارد شو.")}}else{const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;message("ورود موفق بود؛ در حال انتقال...");setTimeout(()=>location.href="/",700)}}catch(err){message(err.message||"خطایی رخ داد. دوباره تلاش کن.","error")}finally{button.disabled=false;button.textContent=mode==="signup"?"ساخت حساب":"ورود به حساب"}});
+$("forgot").addEventListener("click",async e=>{e.preventDefault();clearMessage();if(!ready())return;const email=$("email").value.trim();if(!email){message("اول ایمیلت را وارد کن.","error");$("email").focus();return}try{const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/auth.html"});if(error)throw error;message("اگر این ایمیل حسابی داشته باشد، لینک بازیابی برایش ارسال می‌شود.")}catch(err){message(err.message||"ارسال لینک بازیابی انجام نشد.","error")}});
+$("google").addEventListener("click",async()=>{clearMessage();if(!ready())return;try{const {error}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+"/"}});if(error)throw error}catch(err){message(err.message||"ورود با Google فعلاً در دسترس نیست.","error")}});
+if(client){client.auth.getSession().then(({data})=>{if(data.session){$("heading").textContent="از قبل وارد شده‌ای";$("subtitle").textContent="حساب تو فعال است.";$("submit").textContent="رفتن به LOGINO";$("authForm").addEventListener("submit",e=>{e.preventDefault();location.href="/"},{once:true})}})}
+</script>
+</body>
+</html>
