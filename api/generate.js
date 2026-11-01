@@ -2,15 +2,23 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const IMAGE_MODEL = "@cf/black-forest-labs/flux-1-schnell";
+const SUPABASE_URL = "https://bwkydygqqdsnkdiopnxy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oCpdBTrwqom3mb0AO-0tkA_wAC0ys2d";
 
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const authorization = req.headers.authorization || "";
+  const accessToken = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  if (!accessToken) {
+    return res.status(401).json({ error: "برای ساخت لوگو ابتدا وارد حساب LOGINO شو." });
   }
 
   if (!ACCOUNT_ID || !API_TOKEN) {
@@ -24,6 +32,40 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({
       error: "توضیح لوگو باید بین ۱۲ تا ۷۰۰ کاراکتر باشد."
     });
+  }
+
+  let quotaResult;
+  try {
+    const userResponse = await fetch(SUPABASE_URL + "/auth/v1/user", {
+      headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + accessToken }
+    });
+    if (!userResponse.ok) {
+      return res.status(401).json({ error: "نشست حساب معتبر نیست؛ دوباره وارد شو." });
+    }
+    const rpcResponse = await fetch(SUPABASE_URL + "/rest/v1/rpc/consume_free_generation", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + accessToken,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ p_prompt: idea })
+    });
+    quotaResult = await rpcResponse.json().catch(() => null);
+    if (!rpcResponse.ok) {
+      return res.status(503).json({
+        error: "بررسی سهمیه در Supabase انجام نشد. وجود تابع consume_free_generation و دسترسی آن را بررسی کن."
+      });
+    }
+    if (Array.isArray(quotaResult)) quotaResult = quotaResult[0];
+    if (!quotaResult || quotaResult.allowed !== true) {
+      return res.status(429).json({
+        error: quotaResult?.message || "سهمیه رایگان این حساب تمام شده است؛ پس از ۴۸ ساعت دوباره شارژ می‌شود.",
+        remaining: quotaResult?.remaining ?? 0
+      });
+    }
+  } catch (error) {
+    return res.status(503).json({ error: "ارتباط با سامانه سهمیه LOGINO برقرار نشد." });
   }
 
   const prompt = [
