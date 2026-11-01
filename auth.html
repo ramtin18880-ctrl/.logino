@@ -30,7 +30,7 @@
       <div class="field"><label for="phone">شماره موبایل</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="16" placeholder="0912xxxxxxx"></div>
       <div class="field hidden" id="otpField"><label for="otp">کد پیامکی</label><input id="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="کد ۶ رقمی"></div>
       <div class="hint" id="passwordHint">برای ورود یا ساخت حساب، کد تأیید به شماره‌ات پیامک می‌شود.</div>
-      <button class="primary" id="submit" type="submit">ورود به حساب</button>
+      <button class="primary" id="submit" type="submit">ارسال کد پیامکی</button>
     </form>
     <div class="terms">با ساخت حساب، با شرایط استفاده و سیاست حریم خصوصی LOGINO موافقت می‌کنی.</div>
   </section>
@@ -38,25 +38,61 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* پس از دریافت Project URL و anon/public key این دو مقدار را تنظیم می‌کنیم.
-   هرگز service_role key را در این فایل قرار ندهید. */
 const SUPABASE_URL = "https://bwkydygqqdsnkdiopnxy.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_oCpdBTrwqom3mb0AO-0tkA_wAC0ys2d";
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
 const client = configured && window.supabase ? window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}) : null;
 const $ = id => document.getElementById(id);
-let mode = "login";\nlet otpSent = false;\nfunction normalizePhone(value){let p=String(value||"").replace(/[\\s()-]/g,"");if(/^09\\d{9}$/.test(p))p="+98"+p.slice(1);else if(/^9\\d{9}$/.test(p))p="+98"+p;return /^\\+[1-9]\\d{7,14}$/.test(p)?p:"";}
+let mode = "login";
+let otpSent = false;
+function normalizePhone(value){
+ let p=String(value||"").replace(/[\\s()-]/g,"");
+ if(/^09\\d{9}$/.test(p)) p="+98"+p.slice(1);
+ else if(/^9\\d{9}$/.test(p)) p="+98"+p;
+ return /^\\+[1-9]\\d{7,14}$/.test(p)?p:"";
+}
 function message(text,type="success"){const el=$("message");el.textContent=text;el.className="message show "+type}
 function clearMessage(){$("message").className="message"}
-function setMode(next){mode=next;clearMessage();const signup=mode==="signup";$("loginTab").classList.toggle("active",!signup);$("signupTab").classList.toggle("active",signup);$("loginTab").setAttribute("aria-selected",String(!signup));$("signupTab").setAttribute("aria-selected",String(signup));$("heading").textContent=signup?"حساب جدید بساز":"خوش برگشتی!";$("subtitle").textContent="فقط با شماره موبایل وارد شو؛ بدون ایمیل و رمز عبور.";$("nameField").classList.toggle("hidden",!signup);otpSent=false;$("otpField").classList.add("hidden");$("phone").readOnly=false;$("otp").value="";$("submit").textContent="ارسال کد پیامکی";$("passwordHint").textContent="برای ورود یا ساخت حساب، کد تأیید به شماره‌ات پیامک می‌شود."}
-$("loginTab").addEventListener("click",()=>setMode("login"));$("signupTab").addEventListener("click",()=>setMode("signup"));
-$("togglePassword").addEventListener("click",()=>{const p=$("password");p.type=p.type==="password"?"text":"password";$("togglePassword").textContent=p.type==="password"?"نمایش":"پنهان"});
-$("password").addEventListener("input",()=>{const p=$("password").value;let score=0;if(p.length>=8)score++;if(/[A-Z]/.test(p)&&/[a-z]/.test(p))score++;if(/\d/.test(p))score++;if(/[^A-Za-z0-9]/.test(p))score++;$("strengthBar").style.width=(score*25)+"%"});
-function ready(){if(!client){message("اتصال Supabase هنوز تنظیم نشده است. ابتدا Project URL و anon/public key را در تنظیمات این صفحه قرار می‌دهیم.","error");return false}return true}
-$("authForm").addEventListener("submit",async e=>{e.preventDefault();clearMessage();if(!ready())return;const email=const phone=normalizePhone($("phone").value),code=$("otp").value.trim(),button=$("submit");if(!phone){message("شماره موبایل معتبر با کد کشور وارد کن.","error");return}button.disabled=true;button.textContent="لطفاً صبر کن...";
-try{if(!otpSent){const {error}=await client.auth.signInWithOtp({phone,options:{shouldCreateUser:true,data:{display_name:$("name").value.trim()}}});if(error)throw error;otpSent=true;$("otpField").classList.remove("hidden");$("phone").readOnly=true;$("submit").textContent="تأیید کد و ورود";message("کد تأیید پیامکی ارسال شد. کد را وارد کن.")}else{if(!/^\\d{6}$/.test(code)){message("کد پیامکی ۶ رقمی را وارد کن.","error");return}const {error}=await client.auth.verifyOtp({phone,token:code,type:"sms"});if(error)throw error;message("شماره تأیید شد؛ در حال ورود... ");setTimeout(()=>location.href="/",700)}}catch(err){message(err.message||"ارسال یا تأیید کد انجام نشد.","error")}finally{button.disabled=false;if(!otpSent)button.textContent="ارسال کد پیامکی";else button.textContent="تأیید کد و ورود"}});
-$("forgot").addEventListener("click",async e=>{e.preventDefault();clearMessage();if(!ready())return;message("برای ورود، شماره موبایل و کد پیامکی لازم است.","error");});
-if(client){client.auth.getSession().then(({data})=>{if(data.session)location.replace("/")});client.auth.onAuthStateChange((event,session)=>{if(session&&event==="SIGNED_IN")location.replace("/")})}
+function setMode(next){
+ mode=next;clearMessage();const signup=mode==="signup";
+ $("loginTab").classList.toggle("active",!signup);$("signupTab").classList.toggle("active",signup);
+ $("loginTab").setAttribute("aria-selected",String(!signup));$("signupTab").setAttribute("aria-selected",String(signup));
+ $("heading").textContent=signup?"حساب جدید بساز":"خوش برگشتی!";
+ $("subtitle").textContent="فقط با شماره موبایل وارد شو؛ بدون ایمیل و رمز عبور.";
+ $("nameField").classList.toggle("hidden",!signup);otpSent=false;
+ $("otpField").classList.add("hidden");$("phone").readOnly=false;$("otp").value="";
+ $("submit").textContent="ارسال کد پیامکی";
+}
+$("loginTab").addEventListener("click",()=>setMode("login"));
+$("signupTab").addEventListener("click",()=>setMode("signup"));
+function ready(){if(!client){message("اتصال Supabase در دسترس نیست.","error");return false}return true}
+$("authForm").addEventListener("submit",async e=>{
+ e.preventDefault();clearMessage();if(!ready())return;
+ const phone=normalizePhone($("phone").value),code=$("otp").value.trim(),button=$("submit");
+ if(!phone){message("شماره موبایل معتبر وارد کن؛ مثلاً 09123456789.","error");return}
+ button.disabled=true;button.textContent="لطفاً صبر کن...";
+ try{
+  if(!otpSent){
+   const options={shouldCreateUser:true};
+   const name=$("name").value.trim();if(name)options.data={display_name:name};
+   const {error}=await client.auth.signInWithOtp({phone,options});
+   if(error)throw error;
+   otpSent=true;$("otpField").classList.remove("hidden");$("phone").readOnly=true;
+   message("درخواست ارسال کد ثبت شد. اگر پیامک نرسید، تنظیمات سرویس پیامک Supabase باید بررسی شود.");
+  }else{
+   if(!/^\\d{6}$/.test(code)){message("کد پیامکی ۶ رقمی را وارد کن.","error");return}
+   const {error}=await client.auth.verifyOtp({phone,token:code,type:"sms"});
+   if(error)throw error;
+   message("شماره تأیید شد؛ در حال ورود...");
+   setTimeout(()=>location.href="/",700);
+  }
+ }catch(err){message(err.message||"ارسال یا تأیید کد انجام نشد.","error")}
+ finally{button.disabled=false;button.textContent=otpSent?"تأیید کد و ورود":"ارسال کد پیامکی"}
+});
+if(client){
+ client.auth.getSession().then(({data})=>{if(data.session)location.replace("/")});
+ client.auth.onAuthStateChange((event,session)=>{if(session&&event==="SIGNED_IN")location.replace("/")});
+}
 </script>
 </body>
 </html>
