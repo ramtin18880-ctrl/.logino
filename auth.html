@@ -46,10 +46,10 @@ const $ = id => document.getElementById(id);
 let mode = "login";
 let otpSent = false;
 function normalizePhone(value){
- let p=String(value||"").replace(/[\\s()-]/g,"");
- if(/^09\\d{9}$/.test(p)) p="+98"+p.slice(1);
- else if(/^9\\d{9}$/.test(p)) p="+98"+p;
- return /^\\+[1-9]\\d{7,14}$/.test(p)?p:"";
+ let p=String(value||"").replace(/[\s()-]/g,"");
+ if(/^09\d{9}$/.test(p)) p="+98"+p.slice(1);
+ else if(/^9\d{9}$/.test(p)) p="+98"+p;
+ return /^\+[1-9]\d{7,14}$/.test(p)?p:"";
 }
 function message(text,type="success"){const el=$("message");el.textContent=text;el.className="message show "+type}
 function clearMessage(){$("message").className="message"}
@@ -80,7 +80,7 @@ $("authForm").addEventListener("submit",async e=>{
    otpSent=true;$("otpField").classList.remove("hidden");$("phone").readOnly=true;
    message("درخواست ارسال کد ثبت شد. اگر پیامک نرسید، تنظیمات سرویس پیامک Supabase باید بررسی شود.");
   }else{
-   if(!/^\\d{6}$/.test(code)){message("کد پیامکی ۶ رقمی را وارد کن.","error");return}
+   if(!/^\d{6}$/.test(code)){message("کد پیامکی ۶ رقمی را وارد کن.","error");return}
    const {error}=await client.auth.verifyOtp({phone,token:code,type:"sms"});
    if(error)throw error;
    message("شماره تأیید شد؛ در حال ورود...");
